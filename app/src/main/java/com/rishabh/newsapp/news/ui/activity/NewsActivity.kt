@@ -1,5 +1,9 @@
 package com.rishabh.newsapp.news.ui.activity
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +26,7 @@ class NewsActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         val newsSourceId = intent.getStringExtra("id") ?: "abc-news"
         val newsSource = intent.getStringExtra("newsSource") ?: "News App"
-        supportActionBar?.title = newsSource
+        supportActionBar?.title = if (isOnline(this)) newsSource else "Offline"
 
         newsList.setEmptyView(empty_view)
         newsList.setProgressView(progress_view)
@@ -40,5 +44,26 @@ class NewsActivity : BaseActivity() {
             }
         }
 
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nw = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+            return when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                //for other device how are able to connect with Ethernet
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                //for check internet over Bluetooth
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                else -> false
+            }
+        } else {
+            val nwInfo = connectivityManager.activeNetworkInfo ?: return false
+            return nwInfo.isConnected
+        }
     }
 }
