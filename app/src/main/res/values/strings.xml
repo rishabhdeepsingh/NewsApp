@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">News App</string>
+
+    <string name="news_image_desc">News Image</string>
+    <string name="news_image">news image</string>
+    <string name="str_test_date">22/02/2017</string>
+    <string name="description_format">%1$s\n\n%2$s</string>
+
+    <string name="no_news">No News</string>
+    <string name="general">general</string>
+    <string name="in">IN</string>
+    <string name="sample_url">http://www.abc.net.au/news</string>
+    <string name="sample_source_name">ABC News (AU)</string>
+</resources>
